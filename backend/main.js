@@ -34,6 +34,28 @@ app.set('view engine', 'ejs')
 
 //route prefix
 app.use('', require('./routes'))
+app.use('', require('./routes/aboutUs'))
+app.use('', require('./routes/climateChange'))
+app.use('', require('./routes/complaints'))
+app.use('/complaints', require('./routes/complaints'))
+app.use('', require('./routes/contactUs'))
+app.use('', require('./routes/drinkingWater'))
+app.use('', require('./routes/petitions'))
+app.use('/petition', require('./routes/petitions'))
+app.use('', require('./routes/profile'))
+app.use('', require('./routes/queries'))
+app.use('/queries', require('./routes/queries'))
+app.use('', require('./routes/signIn'))
+app.use('', require('./routes/signUp'))
+app.use('', require('./routes/transportation'))
+app.use('', require('./routes/womenRight'))
+app.use('', require('./routes/communityEvents'))
+app.use('/communityEvents', require('./routes/communityEvents'))
+app.use('', require('./routes/polls'))
+app.use('/polls', require('./routes/polls'))
+
+
+// var AboutUsRouter = require('./routes/aboutUs')
 
 app.listen(PORT, ()=>{
     console.log(`Server started at http://localhost:${PORT}/`)
