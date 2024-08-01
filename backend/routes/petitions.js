@@ -6,7 +6,7 @@ router.get('/petitions',function(req, res, next){
   res.render('petitions', {title: 'Petitions'});
 });
 
-router.get('/add', function(req, res, next) {
+router.get('/petitions/add', function(req, res, next) {
     res.render('addPetition', { title: 'Add Petition'});
   });
 

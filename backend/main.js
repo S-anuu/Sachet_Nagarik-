@@ -1,35 +1,22 @@
 //imports
 require('dotenv').config()
+
 const express = require('express')
+
 const mongoose = require('mongoose')
 const session = require('express-session')
+const jwt = require('jsonwebtoken')
+const path = require('path')
 
 const app = express()
 const PORT = process.env.PORT || 4000
 
-//database connection
-mongoose.connect('mongodb+srv://anuusapkota10:ow7d3ZyV6CpN0SHe@cluster0.3m1dv67.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(( )=> {
-    console.log("Connected to db")
-  })
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname,'public')))
+app.set('views', path.join(__dirname, 'views'))
 
-//middlewares
-app.use(express.urlencoded({extended: false}))
-app.use(express.json())
+//Templating Engine
 
-app.use(session({
-    secret: 'my secret key',
-    saveUninitialized: true,
-    resave: false,
-})
-)
-
-app.use((req, res, next) => {
-    res.locals.message = req.session.message
-    delete req.session.message
-    next()
-})
-
-// set template engine
 app.set('view engine', 'ejs')
 
 //route prefix
@@ -54,6 +41,44 @@ app.use('/communityEvents', require('./routes/communityEvents'))
 app.use('', require('./routes/polls'))
 app.use('/polls', require('./routes/polls'))
 
+
+// middleware/authMiddleware.js
+
+function authenticateToken(req, res, next) {
+  const token = req.cookies.auth_token || req.headers['authorization']?.split(' ')[1];
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
+
+module.exports = authenticateToken;
+
+//database connection
+mongoose.connect('mongodb+srv://anuusapkota10:ow7d3ZyV6CpN0SHe@cluster0.3m1dv67.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(( )=> {
+    console.log("Connected to db")
+  })
+
+//middlewares
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set to true if using HTTPS
+  }));
+  
+
+app.use((req, res, next) => {
+    res.locals.message = req.session.message
+    delete req.session.message
+    next()
+})
 
 // var AboutUsRouter = require('./routes/aboutUs')
 

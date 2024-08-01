@@ -6,7 +6,7 @@ router.get('/polls',function(req, res, next){
   res.render('polls', {title: 'Polls'});
 });
 
-router.get('/create', function(req, res, next) {
+router.get('/polls/create', function(req, res, next) {
     res.render('createPoll', { title: 'Create Poll'});
   });
 
